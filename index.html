@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>GreenPay — NFC Demo Wallet</title>
+  <title>GreenPay — Онлайн Банк</title>
   <style>
     :root {
       --bg: #0b0f0c;
-      --card-bg: #161e18;
+      --card-bg: #151c17;
       --accent: #21a038;
       --accent-glow: #2ee650;
       --text: #ffffff;
       --text-muted: #8b968e;
       --danger: #ff4d4d;
+      --border: rgba(255, 255, 255, 0.08);
     }
 
     * {
@@ -37,8 +38,70 @@
       padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      position: relative;
+      gap: 18px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Экран авторизации */
+    .auth-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px 22px;
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .logo-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent-glow);
+      letter-spacing: 0.5px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: #0e1310;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+
+    .input:focus {
+      border-color: var(--accent-glow);
+    }
+
+    .btn-main {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    .btn-main:active {
+      transform: scale(0.97);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-weight: 600;
     }
 
     /* Шапка */
@@ -46,7 +109,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 10px;
+      padding-top: 6px;
     }
 
     .profile {
@@ -56,32 +119,38 @@
     }
 
     .avatar {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), #0d521a);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 18px;
     }
 
     .profile-name {
-      font-weight: 600;
+      font-weight: 700;
       font-size: 16px;
     }
 
-    .badge {
+    .role-badge {
       font-size: 11px;
-      background: rgba(33, 160, 56, 0.2);
       color: var(--accent-glow);
-      padding: 4px 8px;
-      border-radius: 12px;
-      border: 1px solid rgba(46, 230, 80, 0.3);
     }
 
-    /* Карта */
+    .logout-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* Банковская карта */
     .bank-card {
       background: linear-gradient(135deg, #1d8a31 0%, #0a3d14 100%);
       border-radius: 24px;
@@ -106,18 +175,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .card-logo {
       font-weight: 800;
       font-size: 20px;
-      letter-spacing: 0.5px;
-    }
-
-    .nfc-icon {
-      font-size: 20px;
-      opacity: 0.85;
     }
 
     .balance-label {
@@ -127,8 +190,8 @@
     }
 
     .balance-amount {
-      font-size: 32px;
-      font-weight: 700;
+      font-size: 34px;
+      font-weight: 800;
       margin-bottom: 20px;
     }
 
@@ -147,10 +210,10 @@
       gap: 12px;
     }
 
-    .btn {
+    .btn-card {
       background: var(--card-bg);
       color: var(--text);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border);
       border-radius: 18px;
       padding: 16px;
       font-size: 14px;
@@ -160,27 +223,64 @@
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      transition: transform 0.15s ease, background 0.2s ease;
     }
 
-    .btn:active {
-      transform: scale(0.96);
-    }
-
-    .btn-primary {
+    .btn-card.primary {
       background: var(--accent);
       border-color: var(--accent-glow);
     }
 
-    .btn-icon {
-      font-size: 22px;
+    /* Админ панель */
+    .admin-panel {
+      background: #141a16;
+      border: 1px solid rgba(46, 230, 80, 0.35);
+      border-radius: 22px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    /* История операций */
+    .admin-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--accent-glow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-plus {
+      background: #1f9d35;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-minus {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* История */
     .section-title {
       font-size: 18px;
       font-weight: 700;
-      margin-top: 8px;
+      margin-top: 4px;
     }
 
     .history-list {
@@ -235,7 +335,11 @@
       color: var(--accent-glow);
     }
 
-    /* Модальное окно NFC и чека */
+    .tx-amount.minus {
+      color: var(--danger);
+    }
+
+    /* Модальное окно */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -254,156 +358,324 @@
 
     .modal {
       background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
       border-radius: 28px;
-      padding: 32px 24px;
+      padding: 28px 22px;
       width: 100%;
       max-width: 360px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
     .pulse-ring {
-      width: 90px;
-      height: 90px;
+      width: 84px;
+      height: 84px;
       border-radius: 50%;
       background: rgba(33, 160, 56, 0.2);
       border: 2px solid var(--accent-glow);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 38px;
+      font-size: 34px;
       animation: pulse 1.5s infinite ease-in-out;
     }
 
     @keyframes pulse {
       0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 230, 80, 0.6); }
-      70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(46, 230, 80, 0); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 18px rgba(46, 230, 80, 0); }
       100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 230, 80, 0); }
-    }
-
-    .receipt-sum {
-      font-size: 34px;
-      font-weight: 800;
-      color: var(--accent-glow);
-    }
-
-    .close-btn {
-      margin-top: 10px;
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
   <div class="app">
-    <div class="header">
-      <div class="profile">
-        <div class="avatar">М</div>
-        <div>
-          <div class="profile-name">Максим</div>
-          <div style="font-size: 12px; color: var(--text-muted);">GreenPay Prime</div>
+
+    <!-- ЭКРАН ВХОДА И РЕГИСТРАЦИИ -->
+    <div id="authScreen" class="auth-box">
+      <div class="logo-title">GreenPay</div>
+      <p style="color: var(--text-muted); font-size: 14px;">Вход или регистрация в системе</p>
+      <input type="text" id="authLogin" class="input" placeholder="Логин (например, Kazel)">
+      <input type="password" id="authPass" class="input" placeholder="Пароль">
+      <div id="authError" style="color: var(--danger); font-size: 13px; min-height: 18px;"></div>
+      <button class="btn-main" onclick="handleLogin()">Войти</button>
+      <button class="btn-main btn-secondary" onclick="handleRegister()">Создать аккаунт (Баланс 0 ₽)</button>
+    </div>
+
+    <!-- ГЛАВНЫЙ ЭКРАН КОШЕЛЬКА -->
+    <div id="walletScreen" class="hidden" style="display: flex; flex-direction: column; gap: 18px;">
+      <div class="header">
+        <div class="profile">
+          <div class="avatar" id="userAvatar">К</div>
+          <div>
+            <div class="profile-name" id="userNameDisplay">Kazel</div>
+            <div class="role-badge" id="userRoleDisplay">Пользователь</div>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="logout()">Выйти</button>
+      </div>
+
+      <div class="bank-card">
+        <div class="card-top">
+          <div class="card-logo">GreenPay</div>
+          <div>NFC )))</div>
+        </div>
+        <div class="balance-label">Доступный остаток</div>
+        <div class="balance-amount" id="balanceDisplay">0 ₽</div>
+        <div class="card-bottom">
+          <span id="cardNumDisplay">•••• 7788</span>
+          <span>12/30</span>
         </div>
       </div>
-      <div class="badge">NFC Demo</div>
-    </div>
 
-    <div class="bank-card">
-      <div class="card-top">
-        <div class="card-logo">GreenPay</div>
-        <div class="nfc-icon">)))</div>
+      <div class="actions">
+        <button class="btn-card primary" onclick="startNfcScan()">
+          <span style="font-size: 22px;">📲</span>
+          <span>Оплата по NFC</span>
+        </button>
+        <button class="btn-card" onclick="openNfcLinkGenerator()">
+          <span style="font-size: 22px;">🔗</span>
+          <span>Создать NFC-ссылку</span>
+        </button>
       </div>
-      <div class="balance-label">Основной счет</div>
-      <div class="balance-amount" id="balanceDisplay">15 400 ₽</div>
-      <div class="card-bottom">
-        <span>•••• 4892</span>
-        <span>09/29</span>
+
+      <!-- ПАНЕЛЬ АДМИНА (Видна только для Kazel) -->
+      <div id="adminPanel" class="admin-panel hidden">
+        <div class="admin-title">
+          <span>👑 Управление банком (Kazel)</span>
+        </div>
+        <label style="font-size: 12px; color: var(--text-muted);">Выбери аккаунт для начисления / списания:</label>
+        <select id="adminTargetUser" class="input"></select>
+        <input type="number" id="adminAmount" class="input" placeholder="Сумма в ₽ (например: 5000)">
+        <input type="text" id="adminComment" class="input" placeholder="Комментарий (Зарплата / Бонус / Вычет)">
+        <div class="admin-grid">
+          <button class="btn-plus" onclick="adminChangeBalance(1)">+ Начислить (ЗП)</button>
+          <button class="btn-minus" onclick="adminChangeBalance(-1)">- Вычесть</button>
+        </div>
       </div>
+
+      <div class="section-title">История операций</div>
+      <div class="history-list" id="historyList"></div>
     </div>
 
-    <div class="actions">
-      <button class="btn btn-primary" onclick="startNfcScan()">
-        <span class="btn-icon">📲</span>
-        <span>Оплата по NFC</span>
-      </button>
-      <button class="btn" onclick="topUpBalance()">
-        <span class="btn-icon">➕</span>
-        <span>Пополнить (+1000 ₽)</span>
-      </button>
-    </div>
-
-    <div class="section-title">История операций</div>
-    <div class="history-list" id="historyList"></div>
   </div>
 
-  <!-- Модалка ожидания NFC / Чека -->
+  <!-- Модальное окно -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modalContent"></div>
   </div>
 
   <script>
-    // Загрузка состояния из localStorage
-    let balance = parseInt(localStorage.getItem('gp_balance')) || 15400;
-    let history = JSON.parse(localStorage.getItem('gp_history')) || [
-      { title: "Кофейня Surf", amount: -320, date: "Вчера, 18:40", icon: "☕" },
-      { title: "Пополнение счета", amount: 5000, date: "Вчера, 12:15", icon: "💸" }
-    ];
+    const ADMIN_LOGIN = "Kazel";
+    const ADMIN_PASS = "Goat7788!";
 
-    function saveState() {
-      localStorage.setItem('gp_balance', balance);
-      localStorage.setItem('gp_history', JSON.stringify(history));
-      renderUI();
+    // Инициализация базы пользователей в localStorage
+    function getUsers() {
+      const data = localStorage.getItem('gp_users_db');
+      let users = data ? JSON.parse(data) : {};
+
+      // Гарантируем, что админ Kazel всегда есть с начальным балансом 0 ₽
+      if (!users[ADMIN_LOGIN]) {
+        users[ADMIN_LOGIN] = {
+          pass: ADMIN_PASS,
+          balance: 0,
+          role: "Администратор банка",
+          card: "•••• 7788",
+          history: []
+        };
+        saveUsers(users);
+      }
+      return users;
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem('gp_users_db', JSON.stringify(users));
+    }
+
+    function getCurrentUser() {
+      return localStorage.getItem('gp_current_user');
     }
 
     function formatMoney(num) {
       return num.toLocaleString('ru-RU') + ' ₽';
     }
 
-    function renderUI() {
-      document.getElementById('balanceDisplay').textContent = formatMoney(balance);
+    // Вход
+    function handleLogin() {
+      const login = document.getElementById('authLogin').value.trim();
+      const pass = document.getElementById('authPass').value;
+      const err = document.getElementById('authError');
+
+      if (!login || !pass) {
+        err.textContent = "Введите логин и пароль";
+        return;
+      }
+
+      const users = getUsers();
+
+      // Проверка спец-аккаунта админа
+      if (login === ADMIN_LOGIN && pass === ADMIN_PASS) {
+        localStorage.setItem('gp_current_user', ADMIN_LOGIN);
+        err.textContent = "";
+        initApp();
+        return;
+      }
+
+      if (!users[login] || users[login].pass !== pass) {
+        err.textContent = "Неверный логин или пароль";
+        return;
+      }
+
+      localStorage.setItem('gp_current_user', login);
+      err.textContent = "";
+      initApp();
+    }
+
+    // Регистрация нового аккаунта (по умолчанию 0 ₽)
+    function handleRegister() {
+      const login = document.getElementById('authLogin').value.trim();
+      const pass = document.getElementById('authPass').value;
+      const err = document.getElementById('authError');
+
+      if (!login || !pass) {
+        err.textContent = "Придумайте логин и пароль";
+        return;
+      }
+
+      const users = getUsers();
+      if (users[login]) {
+        err.textContent = "Такой логин уже занят";
+        return;
+      }
+
+      const randCard = "•••• " + Math.floor(1000 + Math.random() * 9000);
+      users[login] = {
+        pass: pass,
+        balance: 0, // По умолчанию 0 рублей!
+        role: "Клиент GreenPay",
+        card: randCard,
+        history: []
+      };
+
+      saveUsers(users);
+      localStorage.setItem('gp_current_user', login);
+      err.textContent = "";
+      initApp();
+    }
+
+    function logout() {
+      localStorage.removeItem('gp_current_user');
+      initApp();
+    }
+
+    // Отрисовка интерфейса
+    function renderWallet() {
+      const currentLogin = getCurrentUser();
+      const users = getUsers();
+      const user = users[currentLogin];
+
+      document.getElementById('userAvatar').textContent = currentLogin[0].toUpperCase();
+      document.getElementById('userNameDisplay').textContent = currentLogin;
+      document.getElementById('userRoleDisplay').textContent = user.role;
+      document.getElementById('balanceDisplay').textContent = formatMoney(user.balance);
+      document.getElementById('cardNumDisplay').textContent = user.card;
+
+      // Показываем админ-панель только для Kazel
+      const adminPanel = document.getElementById('adminPanel');
+      if (currentLogin === ADMIN_LOGIN) {
+        adminPanel.classList.remove('hidden');
+        const select = document.getElementById('adminTargetUser');
+        const currentSelected = select.value || currentLogin;
+        select.innerHTML = '';
+        Object.keys(users).forEach(uName => {
+          const opt = document.createElement('option');
+          opt.value = uName;
+          opt.textContent = `${uName} (Баланс: ${formatMoney(users[uName].balance)})`;
+          if (uName === currentSelected) opt.selected = true;
+          select.appendChild(opt);
+        });
+      } else {
+        adminPanel.classList.add('hidden');
+      }
+
+      // История операций
       const list = document.getElementById('historyList');
       list.innerHTML = '';
 
-      history.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'tx-item';
-        const isPlus = item.amount > 0;
-        div.innerHTML = `
-          <div class="tx-left">
-            <div class="tx-icon">${item.icon || '🛒'}</div>
-            <div>
-              <div class="tx-title">${item.title}</div>
-              <div class="tx-date">${item.date}</div>
+      if (user.history.length === 0) {
+        list.innerHTML = `<div style="color: var(--text-muted); font-size: 14px; text-align: center; padding: 16px;">Операций пока нет (Баланс 0 ₽)</div>`;
+      } else {
+        user.history.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'tx-item';
+          const isPlus = item.amount > 0;
+          div.innerHTML = `
+            <div class="tx-left">
+              <div class="tx-icon">${item.icon || (isPlus ? '💸' : '🛒')}</div>
+              <div>
+                <div class="tx-title">${item.title}</div>
+                <div class="tx-date">${item.date}</div>
+              </div>
             </div>
-          </div>
-          <div class="tx-amount ${isPlus ? 'plus' : ''}">
-            ${isPlus ? '+' : ''}${formatMoney(item.amount)}
-          </div>
-        `;
-        list.appendChild(div);
-      });
+            <div class="tx-amount ${isPlus ? 'plus' : 'minus'}">
+              ${isPlus ? '+' : ''}${formatMoney(item.amount)}
+            </div>
+          `;
+          list.appendChild(div);
+        });
+      }
     }
 
-    // Короткий звуковой сигнал успешной оплаты (Web Audio API)
+    // Функции Админа: начислить зарплату или вычесть
+    function adminChangeBalance(direction) {
+      const targetUser = document.getElementById('adminTargetUser').value;
+      const amountInput = document.getElementById('adminAmount');
+      const commentInput = document.getElementById('adminComment');
+
+      const rawAmount = parseInt(amountInput.value);
+      if (!rawAmount || rawAmount <= 0) {
+        alert("Введите корректную сумму больше 0");
+        return;
+      }
+
+      const defaultTitle = direction > 0 ? "Начисление зарплаты" : "Списание администратором";
+      const comment = commentInput.value.trim() || defaultTitle;
+
+      const users = getUsers();
+      const user = users[targetUser];
+      const delta = rawAmount * direction;
+
+      user.balance += delta;
+
+      const now = new Date();
+      const timeStr = `Сегодня, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      user.history.unshift({
+        title: comment,
+        amount: delta,
+        date: timeStr,
+        icon: direction > 0 ? "💼" : "⚠️"
+      });
+
+      saveUsers(users);
+      amountInput.value = '';
+      commentInput.value = '';
+      playSuccessSound();
+      renderWallet();
+    }
+
+    // Звук оплаты
     function playSuccessSound() {
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12); // A5
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12);
         gain.gain.setValueAtTime(0.15, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
         osc.connect(gain);
@@ -413,53 +685,72 @@
       } catch (e) {}
     }
 
-    // Проведение платежа
+    // Списание при оплате по NFC
     function processPayment(amount, merchant) {
-      if (balance < amount) {
+      const currentLogin = getCurrentUser();
+      if (!currentLogin) {
+        alert("Сначала войдите в аккаунт для оплаты!");
+        return;
+      }
+
+      const users = getUsers();
+      const user = users[currentLogin];
+
+      if (user.balance < amount) {
         showModal(`
-          <div style="font-size: 48px;">❌</div>
-          <h3>Недостаточно средств</h3>
-          <p style="color: var(--text-muted);">Нужно ${formatMoney(amount)}, а на карте ${formatMoney(balance)}</p>
-          <button class="close-btn" onclick="closeModal()">Понятно</button>
+          <div style="font-size: 46px;">❌</div>
+          <h3>Отказ: мало средств</h3>
+          <p style="color: var(--text-muted); font-size: 14px;">Сумма покупки: <b>${formatMoney(amount)}</b><br>Ваш баланс: <b>${formatMoney(user.balance)}</b></p>
+          <button class="btn-main" onclick="closeModal()">Понятно</button>
         `);
         return;
       }
 
-      balance -= amount;
+      user.balance -= amount;
       const now = new Date();
       const timeStr = `Сегодня, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-      history.unshift({
+      user.history.unshift({
         title: merchant,
         amount: -amount,
         date: timeStr,
         icon: "📡"
       });
 
-      saveState();
+      saveUsers(users);
+      renderWallet();
       playSuccessSound();
       if (navigator.vibrate) navigator.vibrate([80, 50, 120]);
 
       showModal(`
         <div class="pulse-ring" style="animation: none; background: rgba(33,160,56,0.3);">✅</div>
         <div style="color: var(--text-muted); font-size: 14px;">Оплачено по NFC</div>
-        <div class="receipt-sum">- ${formatMoney(amount)}</div>
+        <div style="font-size: 32px; font-weight: 800; color: var(--accent-glow);">- ${formatMoney(amount)}</div>
         <div style="font-weight: 600; font-size: 18px;">${merchant}</div>
-        <button class="close-btn" onclick="closeModal()">Готово</button>
+        <button class="btn-main" onclick="closeModal()">Готово</button>
       `);
     }
 
-    function topUpBalance() {
-      balance += 1000;
-      const now = new Date();
-      const timeStr = `Сегодня, ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      history.unshift({
-        title: "Пополнение баланса",
-        amount: 1000,
-        date: timeStr,
-        icon: "💸"
-      });
-      saveState();
+    // Генератор ссылки для NFC Tools прямо в приложении
+    function openNfcLinkGenerator() {
+      const baseUrl = window.location.origin + window.location.pathname;
+      showModal(`
+        <h3>🔗 Генератор для NFC Tools</h3>
+        <p style="color: var(--text-muted); font-size: 13px;">Создай ссылку для записи на NFC-метку:</p>
+        <input type="number" id="genSum" class="input" placeholder="Сумма (например, 250)" value="250">
+        <input type="text" id="genShop" class="input" placeholder="Магазин (например, Шаурма)" value="Касса NFC">
+        <button class="btn-main" onclick="copyNfcUrl('${baseUrl}')">Скопировать ссылку для NFC</button>
+        <button class="btn-main btn-secondary" onclick="closeModal()">Закрыть</button>
+      `);
+    }
+
+    function copyNfcUrl(baseUrl) {
+      const sum = document.getElementById('genSum').value || 250;
+      const shop = encodeURIComponent(document.getElementById('genShop').value || 'Касса NFC');
+      const finalUrl = `${baseUrl}?pay=${sum}&merchant=${shop}`;
+      navigator.clipboard.writeText(finalUrl);
+      alert("Ссылка скопирована! Запиши её в NFC Tools как URL:\n\n" + finalUrl);
+      closeModal();
     }
 
     function showModal(html) {
@@ -471,18 +762,16 @@
       document.getElementById('modalOverlay').classList.remove('active');
     }
 
-    // Режим чтения метки через Web NFC (Android Chrome) + фолбэк для теста
+    // Сканирование Web NFC
     async function startNfcScan() {
       showModal(`
         <div class="pulse-ring">📡</div>
         <h3>Приложите телефон к NFC-метке</h3>
-        <p style="color: var(--text-muted); font-size: 13px;">Ожидание сигнала терминала...</p>
-        <button class="close-btn" style="background: #2b352e;" onclick="processPayment(350, 'NFC Терминал (Тест)')">
-          Симулировать касание (350 ₽)
+        <p style="color: var(--text-muted); font-size: 13px;">Ожидание терминала...</p>
+        <button class="btn-main" style="background: #263129;" onclick="processPayment(250, 'NFC Касса (Тест)')">
+          Тест оплаты (250 ₽)
         </button>
-        <button class="close-btn" style="background: transparent; color: var(--text-muted); margin-top: 0;" onclick="closeModal()">
-          Отмена
-        </button>
+        <button class="btn-main btn-secondary" onclick="closeModal()">Отмена</button>
       `);
 
       if ('NDEFReader' in window) {
@@ -494,33 +783,45 @@
             for (const record of event.message.records) {
               if (record.recordType === "text") {
                 const text = decoder.decode(record.data);
-                // Формат текста на метке: "250|Шаурма 24"
                 const parts = text.split('|');
                 const sum = parseInt(parts[0]) || 250;
-                const shop = parts[1] || "NFC Касса";
+                const shop = parts[1] || "NFC Терминал";
                 processPayment(sum, shop);
                 return;
               }
             }
-            // Если на метке просто любая запись
             processPayment(250, "NFC Метка");
           };
-        } catch (err) {
-          console.log("Web NFC недоступен или нет HTTPS:", err);
-        }
+        } catch (e) {}
       }
     }
 
-    // СПОСОБ 1: Авто-оплата при открытии ссылки с NFC-метки (?pay=500&merchant=Магазин)
+    function initApp() {
+      getUsers(); // Создает Kazel если его еще нет
+      const currentLogin = getCurrentUser();
+
+      if (!currentLogin) {
+        document.getElementById('authScreen').classList.remove('hidden');
+        document.getElementById('walletScreen').classList.add('hidden');
+      } else {
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('walletScreen').classList.remove('hidden');
+        renderWallet();
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
-      renderUI();
+      initApp();
       const params = new URLSearchParams(window.location.search);
       if (params.has('pay')) {
         const sum = parseInt(params.get('pay')) || 100;
         const merchant = params.get('merchant') || 'NFC Терминал';
-        // Очищаем URL, чтобы при обновлении страницы деньги не списывались повторно
         window.history.replaceState({}, document.title, window.location.pathname);
-        setTimeout(() => processPayment(sum, merchant), 300);
+        if (getCurrentUser()) {
+          setTimeout(() => processPayment(sum, merchant), 300);
+        } else {
+          alert(`Запрос на оплату ${sum} ₽ (${merchant}). Сначала войдите в аккаунт!`);
+        }
       }
     });
   </script>
