@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b0f0c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>GreenPay — NFC Банк</title>
+  <!-- Иконка приложения для Windows и Android -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2224%22 fill=%22%2321a038%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22>G</text></svg>">
   <style>
     :root {
       --bg: #0b0f0c;
@@ -22,6 +28,7 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
     body {
@@ -35,7 +42,7 @@
     .app {
       width: 100%;
       max-width: 420px;
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -45,13 +52,12 @@
       display: none !important;
     }
 
-    /* Авторизация */
     .auth-box {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 24px;
       padding: 28px 22px;
-      margin-top: 40px;
+      margin-top: 30px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -62,7 +68,6 @@
       font-size: 28px;
       font-weight: 800;
       color: var(--accent-glow);
-      letter-spacing: 0.5px;
     }
 
     .input {
@@ -90,7 +95,7 @@
       font-weight: 700;
       font-size: 16px;
       cursor: pointer;
-      transition: transform 0.12s ease;
+      transition: transform 0.12s ease, opacity 0.2s;
     }
 
     .btn-main:active {
@@ -104,7 +109,7 @@
       font-weight: 600;
     }
 
-    /* Шапка профиля */
+    /* Шапка */
     .header {
       display: flex;
       justify-content: space-between;
@@ -128,7 +133,6 @@
       justify-content: center;
       font-weight: 800;
       font-size: 19px;
-      box-shadow: 0 4px 12px rgba(33, 160, 56, 0.3);
     }
 
     .profile-name {
@@ -141,17 +145,22 @@
       color: var(--accent-glow);
     }
 
-    .logout-btn {
+    .header-btns {
+      display: flex;
+      gap: 8px;
+    }
+
+    .small-top-btn {
       background: var(--card-bg);
       border: 1px solid var(--border);
       color: var(--text-muted);
-      padding: 8px 12px;
+      padding: 8px 10px;
       border-radius: 12px;
       font-size: 12px;
       cursor: pointer;
     }
 
-    /* Банковская карта */
+    /* Карта */
     .bank-card {
       background: linear-gradient(135deg, #1d8a31 0%, #0a3d14 100%);
       border-radius: 24px;
@@ -176,7 +185,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
     .card-logo {
@@ -186,7 +195,7 @@
 
     .balance-label {
       font-size: 13px;
-      opacity: 0.8;
+      opacity: 0.85;
       margin-bottom: 4px;
     }
 
@@ -204,22 +213,19 @@
       font-family: monospace;
     }
 
-    /* Карточка личной NFC-ссылки в профиле каждого юзера */
+    /* Поле NFC ссылки в профиле */
     .nfc-profile-box {
       background: var(--card-bg);
       border: 1px solid rgba(46, 230, 80, 0.25);
       border-radius: 20px;
-      padding: 16px;
+      padding: 14px 16px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .nfc-box-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--accent-glow);
     }
@@ -250,7 +256,6 @@
       font-weight: 700;
       font-size: 13px;
       cursor: pointer;
-      white-space: nowrap;
     }
 
     /* Кнопки действий */
@@ -272,7 +277,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
       gap: 6px;
     }
 
@@ -293,9 +297,12 @@
     }
 
     .admin-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: var(--accent-glow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .admin-grid {
@@ -335,6 +342,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      padding-bottom: 30px;
     }
 
     .tx-item {
@@ -365,11 +373,11 @@
 
     .tx-title {
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     .tx-date {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
       margin-top: 2px;
     }
@@ -377,17 +385,13 @@
     .tx-amount {
       font-weight: 700;
       font-size: 15px;
+      white-space: nowrap;
     }
 
-    .tx-amount.plus {
-      color: var(--accent-glow);
-    }
+    .tx-amount.plus { color: var(--accent-glow); }
+    .tx-amount.minus { color: var(--danger); }
 
-    .tx-amount.minus {
-      color: var(--danger);
-    }
-
-    /* Модальное окно */
+    /* Модалка */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -408,14 +412,14 @@
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 28px;
-      padding: 26px 22px;
+      padding: 24px 20px;
       width: 100%;
       max-width: 360px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .receiver-pill {
@@ -424,7 +428,7 @@
       gap: 12px;
       background: rgba(33, 160, 56, 0.15);
       border: 1px solid rgba(46, 230, 80, 0.35);
-      padding: 12px 18px;
+      padding: 12px 16px;
       border-radius: 18px;
       width: 100%;
       text-align: left;
@@ -432,27 +436,15 @@
 
     .sum-big-input {
       width: 100%;
-      padding: 16px;
+      padding: 14px;
       border-radius: 18px;
       border: 2px solid var(--accent-glow);
       background: #0b0f0c;
       color: #fff;
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
       text-align: center;
       outline: none;
-    }
-
-    .pulse-ring {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: rgba(33, 160, 56, 0.2);
-      border: 2px solid var(--accent-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
     }
   </style>
 </head>
@@ -460,83 +452,84 @@
 
   <div class="app">
 
-    <!-- ЭКРАН ВХОДА -->
+    <!-- ЭКРАН АВТОРИЗАЦИИ -->
     <div id="authScreen" class="auth-box">
       <div class="logo-title">GreenPay</div>
-      <p style="color: var(--text-muted); font-size: 14px;">Вход или регистрация (Баланс 0 ₽)</p>
-      <input type="text" id="authLogin" class="input" placeholder="Ваш логин (например, Kazel)">
+      <p style="color: var(--text-muted); font-size: 13px;">Вход или создание счета (По умолчанию 0 ₽)</p>
+      <input type="text" id="authLogin" class="input" placeholder="Логин (например, Kazel)">
       <input type="password" id="authPass" class="input" placeholder="Пароль">
       <div id="authError" style="color: var(--danger); font-size: 13px; min-height: 18px;"></div>
-      <button class="btn-main" onclick="handleLogin()">Войти</button>
-      <button class="btn-main btn-secondary" onclick="handleRegister()">Создать аккаунт</button>
+      <button class="btn-main" onclick="handleLogin()">Войти в банк</button>
+      <button class="btn-main btn-secondary" onclick="handleRegister()">Зарегистрироваться (0 ₽)</button>
     </div>
 
-    <!-- ГЛАВНЫЙ ЭКРАН ПРОФИЛЯ -->
+    <!-- ГЛАВНЫЙ ЭКРАН БАНКА -->
     <div id="walletScreen" class="hidden" style="display: flex; flex-direction: column; gap: 16px;">
       <div class="header">
         <div class="profile">
           <div class="avatar" id="userAvatar">К</div>
           <div>
             <div class="profile-name" id="userNameDisplay">Kazel</div>
-            <div class="role-badge" id="userRoleDisplay">Пользователь</div>
+            <div class="role-badge" id="userRoleDisplay">Клиент</div>
           </div>
         </div>
-        <button class="logout-btn" onclick="logout()">Выйти</button>
+        <div class="header-btns">
+          <button class="small-top-btn" onclick="syncData(true)" title="Обновить баланс">🔄</button>
+          <button class="small-top-btn" onclick="logout()">Выйти</button>
+        </div>
       </div>
 
-      <!-- БАНКОВСКАЯ КАРТА -->
+      <!-- КАРТА -->
       <div class="bank-card">
         <div class="card-top">
           <div class="card-logo">GreenPay</div>
-          <div>NFC )))</div>
+          <div id="cloudStatus" style="font-size: 12px; opacity: 0.9;">🟢 Online</div>
         </div>
         <div class="balance-label">Доступный баланс</div>
         <div class="balance-amount" id="balanceDisplay">0 ₽</div>
         <div class="card-bottom">
           <span id="cardNumDisplay">•••• 7788</span>
-          <span>12/30</span>
+          <span>NFC PAY</span>
         </div>
       </div>
 
-      <!-- ЛИЧНЫЙ NFC-ГЕНЕРАТОР В ПРОФИЛЕ КАЖДОГО ЮЗЕРА -->
+      <!-- ССЫЛКА В ПРОФИЛЕ ДЛЯ NFC МЕТКИ -->
       <div class="nfc-profile-box">
-        <div class="nfc-box-header">
-          <span>🏷️ Моя NFC-ссылка для приёма денег</span>
-        </div>
-        <p style="font-size: 12px; color: var(--text-muted);">
-          Запиши эту ссылку на свою NFC-метку. Кто приложит телефон — сразу введет сумму, и деньги придут тебе на баланс:
-        </p>
+        <div class="nfc-box-header">🏷️ Моя ссылка для NFC-метки (приём оплаты)</div>
         <div class="nfc-url-row">
           <input type="text" id="profileNfcUrl" class="nfc-url-input" readonly>
-          <button class="btn-copy-small" onclick="copyMyProfileNfcUrl()">Скопировать</button>
+          <button class="btn-copy-small" onclick="copyMyProfileNfcUrl()">Копировать</button>
         </div>
       </div>
 
-      <!-- КНОПКИ ПЕРЕВОДА -->
+      <!-- КНОПКИ ПЕРЕВОДА И ОПЛАТЫ -->
       <div class="actions">
         <button class="btn-card primary" onclick="openManualTransferModal()">
           <span style="font-size: 20px;">💸</span>
-          <span>Перевести по нику</span>
+          <span>Перевести клиенту</span>
         </button>
         <button class="btn-card" onclick="testNfcTap()">
           <span style="font-size: 20px;">📲</span>
-          <span>Тест NFC касания</span>
+          <span>Оплата по NFC</span>
         </button>
       </div>
 
-      <!-- ПАНЕЛЬ АДМИНА (Видна только для Kazel) -->
+      <!-- АДМИН-ПАНЕЛЬ (Видна только для Kazel) -->
       <div id="adminPanel" class="admin-panel hidden">
-        <div class="admin-title">👑 Админ-панель (Kazel)</div>
-        <label style="font-size: 12px; color: var(--text-muted);">Выбери юзера:</label>
-        <select id="adminTargetUser" class="input" onchange="updateAdminUserNfcLink()"></select>
+        <div class="admin-title">
+          <span>👑 Управление банком (Kazel)</span>
+          <button class="small-top-btn" onclick="openCloudSetupModal()" style="font-size: 11px;">☁️ База</button>
+        </div>
+        <label style="font-size: 12px; color: var(--text-muted);">Выбери аккаунт для начисления ЗП / списания:</label>
+        <select id="adminTargetUser" class="input"></select>
         <input type="number" id="adminAmount" class="input" placeholder="Сумма в ₽ (например: 5000)">
-        <input type="text" id="adminComment" class="input" placeholder="Комментарий (Зарплата / Бонус / Вычет)">
+        <input type="text" id="adminComment" class="input" placeholder="Комментарий (Зарплата / Бонус / Штраф)">
         <div class="admin-grid">
-          <button class="btn-plus" onclick="adminChangeBalance(1)">+ Выдать ЗП</button>
+          <button class="btn-plus" onclick="adminChangeBalance(1)">+ Начислить ЗП</button>
           <button class="btn-minus" onclick="adminChangeBalance(-1)">- Вычесть</button>
         </div>
-        <button class="btn-main btn-secondary" style="font-size: 13px; padding: 10px;" onclick="copySelectedUserNfcLink()">
-          🔗 Скопировать NFC-ссылку этого юзера
+        <button class="btn-main btn-secondary" style="font-size: 12px; padding: 10px;" onclick="copySelectedUserNfcLink()">
+          🔗 Скопировать NFC-ссылку выбранного юзера
         </button>
       </div>
 
@@ -546,7 +539,7 @@
 
   </div>
 
-  <!-- Модальное окно -->
+  <!-- МОДАЛЬНОЕ ОКНО -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal" id="modalContent"></div>
   </div>
@@ -556,10 +549,14 @@
     const ADMIN_PASS = "Goat7788!";
     let pendingNfcReceiver = null;
 
-    function getUsers() {
-      const data = localStorage.getItem('gp_users_db');
-      let users = data ? JSON.parse(data) : {};
+    // URL облачной базы Firebase Realtime Database (можно задать в настройках админа)
+    function getFirebaseUrl() {
+      return localStorage.getItem('gp_firebase_url') || '';
+    }
 
+    function getLocalUsers() {
+      const raw = localStorage.getItem('gp_users_db');
+      let users = raw ? JSON.parse(raw) : {};
       if (!users[ADMIN_LOGIN]) {
         users[ADMIN_LOGIN] = {
           pass: ADMIN_PASS,
@@ -568,13 +565,49 @@
           card: "•••• 7788",
           history: []
         };
-        saveUsers(users);
+        localStorage.setItem('gp_users_db', JSON.stringify(users));
       }
       return users;
     }
 
-    function saveUsers(users) {
+    // Сохранение + синхронизация с облаком (если подключено)
+    async function saveUsers(users) {
       localStorage.setItem('gp_users_db', JSON.stringify(users));
+      const fbUrl = getFirebaseUrl();
+      if (fbUrl) {
+        try {
+          await fetch(`${fbUrl.replace(/\/$/, '')}/users.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(users)
+          });
+        } catch (e) {
+          console.warn("Ошибка синхронизации с облаком:", e);
+        }
+      }
+    }
+
+    // Загрузка актуальных балансов из облака
+    async function syncData(showToast = false) {
+      const fbUrl = getFirebaseUrl();
+      if (fbUrl) {
+        try {
+          const res = await fetch(`${fbUrl.replace(/\/$/, '')}/users.json`);
+          if (res.ok) {
+            const cloudUsers = await res.json();
+            if (cloudUsers && typeof cloudUsers === 'object') {
+              // Восстанавливаем пустые массивы истории, если Firebase их опустил
+              Object.keys(cloudUsers).forEach(k => {
+                if (!cloudUsers[k].history) cloudUsers[k].history = [];
+                if (typeof cloudUsers[k].balance !== 'number') cloudUsers[k].balance = Number(cloudUsers[k].balance) || 0;
+              });
+              localStorage.setItem('gp_users_db', JSON.stringify(cloudUsers));
+            }
+          }
+        } catch (e) {}
+      }
+      if (getCurrentUser()) renderWallet();
+      if (showToast) playSuccessSound();
     }
 
     function getCurrentUser() {
@@ -582,7 +615,7 @@
     }
 
     function formatMoney(num) {
-      return num.toLocaleString('ru-RU') + ' ₽';
+      return (Number(num) || 0).toLocaleString('ru-RU') + ' ₽';
     }
 
     function getTimeStr() {
@@ -596,37 +629,41 @@
     }
 
     // Вход
-    function handleLogin() {
-      const login = document.getElementById('authLogin').value.trim();
+    async function handleLogin() {
+      await syncData();
+      const loginInput = document.getElementById('authLogin').value.trim();
       const pass = document.getElementById('authPass').value;
       const err = document.getElementById('authError');
 
-      if (!login || !pass) {
+      if (!loginInput || !pass) {
         err.textContent = "Введите логин и пароль";
         return;
       }
 
-      const users = getUsers();
+      const users = getLocalUsers();
 
-      if (login === ADMIN_LOGIN && pass === ADMIN_PASS) {
+      // Поиск логина без учета регистра
+      if (loginInput.toLowerCase() === ADMIN_LOGIN.toLowerCase() && pass === ADMIN_PASS) {
         localStorage.setItem('gp_current_user', ADMIN_LOGIN);
         err.textContent = "";
         initApp();
         return;
       }
 
-      if (!users[login] || users[login].pass !== pass) {
+      const foundKey = Object.keys(users).find(k => k.toLowerCase() === loginInput.toLowerCase());
+      if (!foundKey || users[foundKey].pass !== pass) {
         err.textContent = "Неверный логин или пароль";
         return;
       }
 
-      localStorage.setItem('gp_current_user', login);
+      localStorage.setItem('gp_current_user', foundKey);
       err.textContent = "";
       initApp();
     }
 
-    // Регистрация
-    function handleRegister() {
+    // Регистрация (Баланс 0 ₽)
+    async function handleRegister() {
+      await syncData();
       const login = document.getElementById('authLogin').value.trim();
       const pass = document.getElementById('authPass').value;
       const err = document.getElementById('authError');
@@ -636,9 +673,10 @@
         return;
       }
 
-      const users = getUsers();
-      if (users[login]) {
-        err.textContent = "Такой логин уже занят";
+      const users = getLocalUsers();
+      const exists = Object.keys(users).some(k => k.toLowerCase() === login.toLowerCase());
+      if (exists) {
+        err.textContent = "Такой логин уже существует! Нажмите «Войти».";
         return;
       }
 
@@ -650,7 +688,7 @@
         history: []
       };
 
-      saveUsers(users);
+      await saveUsers(users);
       localStorage.setItem('gp_current_user', login);
       err.textContent = "";
       initApp();
@@ -661,22 +699,25 @@
       initApp();
     }
 
-    // Отрисовка профиля и персональной NFC-ссылки
     function renderWallet() {
       const currentLogin = getCurrentUser();
-      const users = getUsers();
+      const users = getLocalUsers();
+      if (!users[currentLogin]) {
+        logout();
+        return;
+      }
       const user = users[currentLogin];
 
       document.getElementById('userAvatar').textContent = currentLogin[0].toUpperCase();
       document.getElementById('userNameDisplay').textContent = currentLogin;
-      document.getElementById('userRoleDisplay').textContent = user.role;
+      document.getElementById('userRoleDisplay').textContent = user.role || "Клиент";
       document.getElementById('balanceDisplay').textContent = formatMoney(user.balance);
-      document.getElementById('cardNumDisplay').textContent = user.card;
-
-      // Генерируем личную NFC ссылку в профиле этого юзера
+      document.getElementById('cardNumDisplay').textContent = user.card || "•••• 0000";
       document.getElementById('profileNfcUrl').value = getUserNfcLink(currentLogin);
 
-      // Админка для Kazel
+      document.getElementById('cloudStatus').textContent = getFirebaseUrl() ? "☁️ Cloud Sync" : "📱 Local Mode";
+
+      // Админ панель для Kazel
       const adminPanel = document.getElementById('adminPanel');
       if (currentLogin === ADMIN_LOGIN) {
         adminPanel.classList.remove('hidden');
@@ -686,7 +727,7 @@
         Object.keys(users).forEach(uName => {
           const opt = document.createElement('option');
           opt.value = uName;
-          opt.textContent = `${uName} (${formatMoney(users[uName].balance)})`;
+          opt.textContent = `${uName} (Баланс: ${formatMoney(users[uName].balance)})`;
           if (uName === prev) opt.selected = true;
           select.appendChild(opt);
         });
@@ -694,17 +735,18 @@
         adminPanel.classList.add('hidden');
       }
 
-      // История операций
+      // История
       const list = document.getElementById('historyList');
       list.innerHTML = '';
+      const hist = user.history || [];
 
-      if (user.history.length === 0) {
-        list.innerHTML = `<div style="color: var(--text-muted); font-size: 14px; text-align: center; padding: 16px;">Операций пока нет (0 ₽)</div>`;
+      if (hist.length === 0) {
+        list.innerHTML = `<div style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 18px;">Операций пока нет (Баланс 0 ₽)</div>`;
       } else {
-        user.history.forEach(item => {
+        hist.forEach(item => {
           const div = document.createElement('div');
           div.className = 'tx-item';
-          const isPlus = item.amount > 0;
+          const isPlus = Number(item.amount) > 0;
           div.innerHTML = `
             <div class="tx-left">
               <div class="tx-icon">${item.icon || (isPlus ? '📥' : '📤')}</div>
@@ -722,41 +764,28 @@
       }
     }
 
-    // Копирование личной NFC-ссылки из профиля
-    function copyMyProfileNfcUrl() {
-      const link = document.getElementById('profileNfcUrl').value;
-      navigator.clipboard.writeText(link);
-      alert("Твоя NFC-ссылка скопирована!\n\nЗапиши её в NFC Tools (Запись -> URL / URI):\n" + link);
-    }
-
-    // Копирование NFC-ссылки выбранного юзера из админки
-    function copySelectedUserNfcLink() {
-      const targetUser = document.getElementById('adminTargetUser').value;
-      const link = getUserNfcLink(targetUser);
-      navigator.clipboard.writeText(link);
-      alert(`NFC-ссылка для юзера ${targetUser} скопирована:\n\n${link}`);
-    }
-
-    // Начисление ЗП / Вычет в админке
-    function adminChangeBalance(direction) {
+    // Админ: Выдать ЗП или Вычесть
+    async function adminChangeBalance(direction) {
+      await syncData();
       const targetUser = document.getElementById('adminTargetUser').value;
       const amountInput = document.getElementById('adminAmount');
       const commentInput = document.getElementById('adminComment');
 
-      const rawAmount = parseInt(amountInput.value);
+      const rawAmount = Number(amountInput.value);
       if (!rawAmount || rawAmount <= 0) {
-        alert("Введите сумму больше 0");
+        alert("Введите сумму больше 0 ₽!");
         return;
       }
 
-      const defaultTitle = direction > 0 ? "Начисление зарплаты" : "Списание (Админ)";
+      const defaultTitle = direction > 0 ? "Начисление зарплаты" : "Удержание (Админ)";
       const comment = commentInput.value.trim() || defaultTitle;
 
-      const users = getUsers();
+      const users = getLocalUsers();
       const user = users[targetUser];
       const delta = rawAmount * direction;
 
-      user.balance += delta;
+      user.balance = (Number(user.balance) || 0) + delta;
+      if (!user.history) user.history = [];
       user.history.unshift({
         title: comment,
         amount: delta,
@@ -764,50 +793,62 @@
         icon: direction > 0 ? "💼" : "⚠️"
       });
 
-      saveUsers(users);
+      await saveUsers(users);
       amountInput.value = '';
       commentInput.value = '';
       playSuccessSound();
       renderWallet();
     }
 
-    // МГНОВЕННОЕ ОКНО ОПЛАТЫ ПРИ КАСАНИИ NFC-МЕТКИ (БЕЗ ВВОДА ПОЛУЧАТЕЛЯ!)
+    // Копирование личной NFC ссылки
+    function copyMyProfileNfcUrl() {
+      const link = document.getElementById('profileNfcUrl').value;
+      navigator.clipboard.writeText(link);
+      alert("Ссылка скопирована! Запиши её в NFC Tools -> Запись -> URL:\n\n" + link);
+    }
+
+    function copySelectedUserNfcLink() {
+      const targetUser = document.getElementById('adminTargetUser').value;
+      const link = getUserNfcLink(targetUser);
+      navigator.clipboard.writeText(link);
+      alert(`NFC-ссылка для ${targetUser} скопирована:\n\n${link}`);
+    }
+
+    // МГНОВЕННОЕ ОКНО ПЕРЕВОДА ПО NFC-МЕТКЕ (Вводишь только сумму!)
     function openInstantNfcPayModal(receiverName) {
       const currentLogin = getCurrentUser();
-      const users = getUsers();
+      const users = getLocalUsers();
+      const myBalance = users[currentLogin] ? users[currentLogin].balance : 0;
 
       showModal(`
-        <div class="pulse-ring">📡</div>
-        <h3>Оплата по NFC</h3>
+        <div style="font-size: 36px;">📡</div>
+        <h3>Оплата / Перевод по NFC</h3>
         <div class="receiver-pill">
           <div class="avatar" style="width: 38px; height: 38px; font-size: 16px;">${receiverName[0].toUpperCase()}</div>
           <div>
-            <div style="font-size: 12px; color: var(--text-muted);">Получатель платежа:</div>
+            <div style="font-size: 12px; color: var(--text-muted);">Получатель:</div>
             <div style="font-weight: 800; font-size: 17px; color: #fff;">${receiverName}</div>
           </div>
         </div>
-        <p style="color: var(--text-muted); font-size: 13px;">Ваш баланс: <b>${formatMoney(users[currentLogin].balance)}</b></p>
+        <p style="color: var(--text-muted); font-size: 13px;">Ваш доступный баланс: <b>${formatMoney(myBalance)}</b></p>
         <input type="hidden" id="transferToInput" value="${receiverName}">
-        <input type="number" id="transferAmountInput" class="sum-big-input" placeholder="0 ₽" autofocus>
+        <input type="number" id="transferAmountInput" class="sum-big-input" placeholder="Сумма ₽" autofocus>
         <input type="text" id="transferMsgInput" class="input" placeholder="Комментарий (необязательно)">
+        <div id="transferErr" style="color: var(--danger); font-size: 13px; min-height: 16px;"></div>
         <button class="btn-main" onclick="executeTransfer()">Перевести деньги</button>
         <button class="btn-main btn-secondary" onclick="closeModal()">Отмена</button>
       `);
-
-      setTimeout(() => {
-        const inp = document.getElementById('transferAmountInput');
-        if (inp) inp.focus();
-      }, 150);
     }
 
-    // Обычный перевод по выбору из списка
+    // ОБЫЧНОЕ ОКНО ПЕРЕВОДА ПО НИКУ
     function openManualTransferModal() {
       const currentLogin = getCurrentUser();
-      const users = getUsers();
+      const users = getLocalUsers();
+      const myBalance = users[currentLogin] ? users[currentLogin].balance : 0;
 
-      let optionsHtml = `<option value="">-- Выберите получателя --</option>`;
+      let optionsHtml = `<option value="">-- Выбрать получателя из списка --</option>`;
       Object.keys(users).forEach(uName => {
-        if (uName !== currentLogin) {
+        if (uName.toLowerCase() !== currentLogin.toLowerCase()) {
           optionsHtml += `<option value="${uName}">${uName}</option>`;
         }
       });
@@ -815,59 +856,61 @@
       showModal(`
         <div style="font-size: 32px;">💸</div>
         <h3>Перевод клиенту</h3>
-        <p style="color: var(--text-muted); font-size: 13px;">Ваш баланс: <b>${formatMoney(users[currentLogin].balance)}</b></p>
-        <select class="input" onchange="document.getElementById('transferToInput').value = this.value">
+        <p style="color: var(--text-muted); font-size: 13px;">Ваш баланс: <b>${formatMoney(myBalance)}</b></p>
+        <select class="input" onchange="if(this.value) document.getElementById('transferToInput').value = this.value">
           ${optionsHtml}
         </select>
-        <input type="text" id="transferToInput" class="input" placeholder="Или введите логин получателя">
+        <input type="text" id="transferToInput" class="input" placeholder="Логин получателя (например, Kazel)">
         <input type="number" id="transferAmountInput" class="sum-big-input" placeholder="Сумма ₽">
-        <input type="text" id="transferMsgInput" class="input" placeholder="Сообщение (необязательно)">
+        <input type="text" id="transferMsgInput" class="input" placeholder="Сообщение получателю">
+        <div id="transferErr" style="color: var(--danger); font-size: 13px; min-height: 16px;"></div>
         <button class="btn-main" onclick="executeTransfer()">Отправить перевод</button>
         <button class="btn-main btn-secondary" onclick="closeModal()">Отмена</button>
       `);
     }
 
-    // Тест касания метки прямо с экрана
     function testNfcTap() {
       const currentLogin = getCurrentUser();
-      const defaultTarget = currentLogin === ADMIN_LOGIN ? "Клиент" : ADMIN_LOGIN;
-      openInstantNfcPayModal(defaultTarget);
+      const target = currentLogin === ADMIN_LOGIN ? "Брат" : ADMIN_LOGIN;
+      openInstantNfcPayModal(target);
     }
 
-    // ВЫПОЛНЕНИЕ ПЕРЕВОДА (СПИСАНИЕ У ОДНОГО И ЗАЧИСЛЕНИЕ ДРУГОМУ)
-    function executeTransfer() {
+    // ИСПРАВЛЕННАЯ ФУНКЦИЯ ПЕРЕВОДА
+    async function executeTransfer() {
+      await syncData();
       const senderLogin = getCurrentUser();
-      const receiverRaw = document.getElementById('transferToInput').value.trim();
-      const amount = parseInt(document.getElementById('transferAmountInput').value);
-      const msg = document.getElementById('transferMsgInput').value.trim();
+      const receiverInput = document.getElementById('transferToInput');
+      const amountInput = document.getElementById('transferAmountInput');
+      const msgInput = document.getElementById('transferMsgInput');
+      const errBox = document.getElementById('transferErr');
+
+      const receiverRaw = receiverInput ? receiverInput.value.trim() : '';
+      const amount = Number(amountInput ? amountInput.value : 0);
+      const msg = msgInput ? msgInput.value.trim() : '';
 
       if (!receiverRaw) {
-        alert("Укажите получателя!");
+        if (errBox) errBox.textContent = "Укажите логин получателя!";
         return;
       }
-      if (!amount || amount <= 0) {
-        alert("Введите сумму больше 0 ₽!");
+      if (!amount || amount <= 0 || isNaN(amount)) {
+        if (errBox) errBox.textContent = "Введите сумму больше 0 ₽!";
         return;
       }
       if (receiverRaw.toLowerCase() === senderLogin.toLowerCase()) {
-        alert("Нельзя перевести самому себе!");
+        if (errBox) errBox.textContent = "Нельзя перевести деньги самому себе!";
         return;
       }
 
-      const users = getUsers();
+      const users = getLocalUsers();
       const sender = users[senderLogin];
+      const senderBalance = Number(sender.balance) || 0;
 
-      if (sender.balance < amount) {
-        showModal(`
-          <div style="font-size: 46px;">❌</div>
-          <h3>Недостаточно средств</h3>
-          <p style="color: var(--text-muted); font-size: 14px;">Сумма: <b>${formatMoney(amount)}</b><br>Ваш баланс: <b>${formatMoney(sender.balance)}</b></p>
-          <button class="btn-main" onclick="closeModal()">Понятно</button>
-        `);
+      if (senderBalance < amount) {
+        if (errBox) errBox.textContent = `Недостаточно средств! На балансе ${formatMoney(senderBalance)}`;
         return;
       }
 
-      // Находим получателя или создаем профиль, если его еще не было
+      // Находим получателя в базе или создаем ему новый аккаунт автоматически
       let receiverKey = Object.keys(users).find(k => k.toLowerCase() === receiverRaw.toLowerCase());
       if (!receiverKey) {
         receiverKey = receiverRaw;
@@ -883,37 +926,65 @@
       const receiver = users[receiverKey];
       const timeStr = getTimeStr();
 
-      // Списываем у отправителя
-      sender.balance -= amount;
+      // 1. Вычитаем у отправителя
+      sender.balance = senderBalance - amount;
+      if (!sender.history) sender.history = [];
       sender.history.unshift({
-        title: `Оплата / Перевод → ${receiverKey}${msg ? ' (' + msg + ')' : ''}`,
+        title: `Перевод → ${receiverKey}${msg ? ' (' + msg + ')' : ''}`,
         amount: -amount,
         date: timeStr,
         icon: "📤"
       });
 
-      // Начисляем получателю
-      receiver.balance += amount;
+      // 2. Прибавляем получателю
+      receiver.balance = (Number(receiver.balance) || 0) + amount;
+      if (!receiver.history) receiver.history = [];
       receiver.history.unshift({
-        title: `Поступление от ${senderLogin}${msg ? ' (' + msg + ')' : ''}`,
+        title: `Перевод от ${senderLogin}${msg ? ' (' + msg + ')' : ''}`,
         amount: amount,
         date: timeStr,
         icon: "📥"
       });
 
-      saveUsers(users);
+      await saveUsers(users);
       renderWallet();
       playSuccessSound();
       if (navigator.vibrate) navigator.vibrate([80, 50, 120]);
 
       showModal(`
-        <div class="pulse-ring" style="background: rgba(33,160,56,0.3);">✅</div>
-        <div style="color: var(--text-muted); font-size: 14px;">Успешно переведено</div>
+        <div style="font-size: 48px;">✅</div>
+        <div style="color: var(--text-muted); font-size: 14px;">Перевод успешно выполнен</div>
         <div style="font-size: 34px; font-weight: 800; color: var(--accent-glow);">- ${formatMoney(amount)}</div>
-        <div style="font-weight: 700; font-size: 18px;">Кому: ${receiverKey}</div>
+        <div style="font-weight: 700; font-size: 18px;">Получатель: ${receiverKey}</div>
         ${msg ? `<div style="font-size: 13px; color: var(--text-muted);">«${msg}»</div>` : ''}
         <button class="btn-main" onclick="closeModal()">Готово</button>
       `);
+    }
+
+    // Окно подключения Firebase для синхронизации между разными телефонами и ПК
+    function openCloudSetupModal() {
+      const currentUrl = getFirebaseUrl();
+      showModal(`
+        <h3>☁️ Синхронизация между устройствами</h3>
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
+          Чтобы переводы мгновенно работали между <b>разными телефонами и ПК</b>, вставь ссылку на свою <b>Firebase Realtime Database</b> (например, <code>https://my-app-default-rtdb.firebaseio.com</code>):
+        </p>
+        <input type="text" id="fbUrlInput" class="input" placeholder="https://...firebaseio.com" value="${currentUrl}">
+        <button class="btn-main" onclick="saveCloudUrl()">Сохранить базу</button>
+        <button class="btn-main btn-secondary" onclick="closeModal()">Закрыть</button>
+      `);
+    }
+
+    async function saveCloudUrl() {
+      const val = document.getElementById('fbUrlInput').value.trim();
+      localStorage.setItem('gp_firebase_url', val);
+      if (val) {
+        const users = getLocalUsers();
+        await saveUsers(users);
+      }
+      closeModal();
+      renderWallet();
+      alert(val ? "Облачная база подключена!" : "Переключено на локальный режим");
     }
 
     function playSuccessSound() {
@@ -942,8 +1013,8 @@
       document.getElementById('modalOverlay').classList.remove('active');
     }
 
-    function initApp() {
-      getUsers();
+    async function initApp() {
+      await syncData();
       const currentLogin = getCurrentUser();
 
       if (!currentLogin) {
@@ -954,11 +1025,10 @@
         document.getElementById('walletScreen').classList.remove('hidden');
         renderWallet();
 
-        // Если открыли по NFC-метке (?to=ИмяЮзера) — сразу показываем окно ввода суммы!
         if (pendingNfcReceiver) {
           const target = pendingNfcReceiver;
           pendingNfcReceiver = null;
-          setTimeout(() => openInstantNfcPayModal(target), 200);
+          setTimeout(() => openInstantNfcPayModal(target), 250);
         }
       }
     }
@@ -970,6 +1040,10 @@
         window.history.replaceState({}, document.title, window.location.pathname);
       }
       initApp();
+      // Автообновление баланса каждые 5 секунд при подключенном облаке
+      setInterval(() => {
+        if (getCurrentUser() && getFirebaseUrl()) syncData();
+      }, 5000);
     });
   </script>
 </body>
